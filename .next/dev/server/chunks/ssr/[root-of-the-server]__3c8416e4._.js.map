@@ -1,0 +1,6 @@
+{
+  "version": 3,
+  "sources": [],
+  "sections": [
+    {"offset": {"line": 40, "column": 0}, "map": {"version":3,"sources":["file:///C:/Users/VP/ArchAngelbot/pages/_document.js"],"sourcesContent":["// pages/_document.js\r\nimport { Html, Head, Main, NextScript } from 'next/document';\r\n\r\nexport default function Document() {\r\n  return (\r\n    <Html lang=\"en\">\r\n      <Head>\r\n        <meta charSet=\"UTF-8\" />\r\n        <meta name=\"theme-color\" content=\"#000000\" />\r\n      </Head>\r\n      <body>\r\n        <Main />\r\n        <NextScript />\r\n      </body>\r\n    </Html>\r\n  );\r\n}\r\n"],"names":[],"mappings":"AAAA,qBAAqB;;;;;;AACrB;;;AAEe,SAAS;IACtB,qBACE,qKAAC,iIAAI;QAAC,MAAK;;0BACT,qKAAC,iIAAI;;kCACH,qKAAC;wBAAK,SAAQ;;;;;;kCACd,qKAAC;wBAAK,MAAK;wBAAc,SAAQ;;;;;;;;;;;;0BAEnC,qKAAC;;kCACC,qKAAC,iIAAI;;;;;kCACL,qKAAC,uIAAU;;;;;;;;;;;;;;;;;AAInB","debugId":null}}]
+}

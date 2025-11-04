@@ -1,0 +1,116 @@
+/* [project]/styles/globals.css [client] (css) */
+body {
+  color: #f0f0f0;
+  background-color: #0d0d0d;
+  margin: 0;
+  padding: 0;
+  font-family: Inter, sans-serif;
+}
+
+.dashboard-container {
+  max-width: 1200px;
+  margin: auto;
+  padding: 2rem;
+}
+
+header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+header h1 {
+  color: #00ffb3;
+  font-size: 2rem;
+}
+
+.stats {
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1.2rem;
+  display: grid;
+}
+
+.card {
+  text-align: center;
+  background: #1a1a1a;
+  border-radius: 10px;
+  padding: 1.5rem;
+  box-shadow: 0 0 15px #00ffb31a;
+}
+
+.card .value {
+  color: #00ffb3;
+  font-size: 1.8rem;
+}
+
+.card .profit {
+  color: #00e676;
+  font-size: 1.5rem;
+}
+
+.status.live {
+  color: #00ffb3;
+}
+
+.status.stopped {
+  color: #f55;
+}
+
+.status.disconnected {
+  color: #fa0;
+}
+
+.controls {
+  text-align: center;
+  margin-top: 2rem;
+}
+
+.btn {
+  color: #000;
+  cursor: pointer;
+  background-color: #00ffb3;
+  border: none;
+  border-radius: 8px;
+  margin: 0 .5rem;
+  padding: .8rem 1.5rem;
+  font-weight: bold;
+  transition: all .2s;
+}
+
+.btn.stop {
+  color: #fff;
+  background-color: #ff4b4b;
+}
+
+.btn:hover:not(.disabled) {
+  opacity: .8;
+}
+
+.btn.disabled {
+  opacity: .4;
+  cursor: not-allowed;
+}
+
+.new-tokens {
+  background: #111;
+  border-radius: 10px;
+  margin-top: 3rem;
+  padding: 1.5rem;
+}
+
+.new-tokens table {
+  border-collapse: collapse;
+  width: 100%;
+  margin-top: 1rem;
+}
+
+.new-tokens th, .new-tokens td {
+  text-align: left;
+  border-bottom: 1px solid #222;
+  padding: .6rem;
+}
+
+.new-tokens th {
+  color: #00ffb3;
+}
+
+/*# sourceMappingURL=styles_globals_dc36e6c9.css.map*/
