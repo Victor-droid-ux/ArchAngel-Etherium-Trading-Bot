@@ -1,41 +1,13 @@
-[00:00:04.754] Server  LOG      ✓ Ready in 3.2s
-[00:06:58.207] Server  LOG      ○ Compiling / ...
-[00:07:03.801] Server  WARN     ⚠ Cross origin request detected from 192.168.70.24 to /_next/* resource. In a future major version of Next.js, you will need to explicitly configure "allowedDevOrigins" in next.config to allow this.
+[00:00:03.645] Server  LOG      ✓ Ready in 2.4s
+[00:00:27.171] Server  LOG      ○ Compiling / ...
+[00:00:34.279] Server  WARN     ⚠ Cross origin request detected from 192.168.182.24 to /_next/* resource. In a future major version of Next.js, you will need to explicitly configure "allowedDevOrigins" in next.config to allow this.
 Read more: https://nextjs.org/docs/app/api-reference/config/next-config-js/allowedDevOrigins
-[00:07:04.152] Browser LOG     🟢 Connected to WebSocket backend
-[00:18:41.986] Browser LOG     🟢 Connected to WebSocket backend
-[00:18:43.877] Browser LOG     🟢 Connected to WebSocket backend
-[00:48:21.992] Browser LOG     🟢 Connected to WebSocket backend
-[00:56:38.217] Browser ERROR   ❌ Socket error: websocket error
-[00:56:44.220] Browser ERROR   ❌ Socket error: websocket error
-[00:56:57.361] Browser LOG     🆕 Token from new_token: {"fromHistory":true,"token":"0x4d05c8839f856ca2126a7e89db93407c52328817"}
-[00:56:57.361] Browser LOG     🆕 Token from new_token: {"fromHistory":true,"token":"0x41bb12dac5e22ec6ce44a5a6aa858dd76a368e49"}
-[00:56:57.361] Browser LOG     🆕 Token from new_token: {"fromHistory":true,"token":"0x6ea50b736bdcefed8563b1c5f9b34dffda14b5ca"}
-[00:56:57.361] Browser LOG     🆕 Token from new_token: {"fromHistory":true,"token":"0xb4952db87f10f749b3fa6597dde8ad9d25bb7d3b"}
-[00:56:57.362] Browser LOG     🆕 Token from new_token: {"fromHistory":true,"token":"0xdf04fe4baecd4d05029cd9675448aead10dc38b0"}
-[01:03:57.406] Browser LOG     🟢 Connected to WebSocket backend
-[01:03:58.954] Browser ERROR   ❌ Socket error: websocket error
-[01:04:02.276] Browser ERROR   ❌ Socket error: websocket error
-[01:04:07.445] Browser ERROR   ❌ Socket error: websocket error
-[01:04:08.096] Browser LOG     🟢 Connected to WebSocket backend
-[01:04:10.650] Browser ERROR   ❌ Socket error: websocket error
-[01:04:14.144] Browser ERROR   ❌ Socket error: websocket error
-[01:04:19.173] Browser ERROR   ❌ Socket error: websocket error
-[01:04:23.164] Browser LOG     🟢 Connected to WebSocket backend
-[01:04:25.208] Browser LOG     🟢 Connected to WebSocket backend
-[01:04:27.857] Browser ERROR   ❌ Socket error: websocket error
-[01:04:31.262] Browser ERROR   ❌ Socket error: websocket error
-[01:04:35.151] Browser ERROR   ❌ Socket error: websocket error
-[01:04:43.217] Browser ERROR   ❌ Socket error: websocket error
-[01:04:51.217] Browser ERROR   ❌ Socket error: websocket error
-[01:04:59.217] Browser ERROR   ❌ Socket error: websocket error
-[01:05:05.215] Browser LOG     🆕 Token from new_token: {"fromHistory":true,"token":"0x4d05c8839f856ca2126a7e89db93407c52328817"}
-[01:05:05.215] Browser LOG     🆕 Token from new_token: {"fromHistory":true,"token":"0x41bb12dac5e22ec6ce44a5a6aa858dd76a368e49"}
-[01:05:05.215] Browser LOG     🆕 Token from new_token: {"fromHistory":true,"token":"0x6ea50b736bdcefed8563b1c5f9b34dffda14b5ca"}
-[01:05:05.215] Browser LOG     🆕 Token from new_token: {"fromHistory":true,"token":"0xb4952db87f10f749b3fa6597dde8ad9d25bb7d3b"}
-[01:05:05.215] Browser LOG     🆕 Token from new_token: {"fromHistory":true,"token":"0xdf04fe4baecd4d05029cd9675448aead10dc38b0"}
-[01:05:16.005] Browser LOG     🆕 Token from new_token: {"fromHistory":true,"token":"0x4d05c8839f856ca2126a7e89db93407c52328817"}
-[01:05:16.005] Browser LOG     🆕 Token from new_token: {"fromHistory":true,"token":"0x41bb12dac5e22ec6ce44a5a6aa858dd76a368e49"}
-[01:05:16.005] Browser LOG     🆕 Token from new_token: {"fromHistory":true,"token":"0x6ea50b736bdcefed8563b1c5f9b34dffda14b5ca"}
-[01:05:16.005] Browser LOG     🆕 Token from new_token: {"fromHistory":true,"token":"0xb4952db87f10f749b3fa6597dde8ad9d25bb7d3b"}
-[01:05:16.005] Browser LOG     🆕 Token from new_token: {"fromHistory":true,"token":"0xdf04fe4baecd4d05029cd9675448aead10dc38b0"}
+[00:00:34.587] Browser LOG     🟢 Connected to WebSocket backend
+[00:00:44.307] Browser LOG     🆕 Token from new_token: {"fromHistory":true,"token":"0xb4952db87f10f749b3fa6597dde8ad9d25bb7d3b"}
+[00:00:44.307] Browser LOG     🆕 Token from new_token: {"fromHistory":true,"token":"0xdf04fe4baecd4d05029cd9675448aead10dc38b0"}
+[00:00:44.307] Browser LOG     🆕 Token from new_token: {"fromHistory":true,"token":"0x1a73d67881faa059bcb28e83aa46b8ab9cefff70"}
+[00:00:44.307] Browser LOG     🆕 Token from new_token: {"fromHistory":true,"token":"0x3e11c7cc05750ba1aeff1e16aacd2da592644444"}
+[00:00:44.307] Browser LOG     🆕 Token from new_token: {"fromHistory":true,"token":"0x74eecdfc4e96ef08cf591d8de02bee1a1d8b935b"}
+[00:01:30.781] Browser LOG     🆕 Token from pair_created: {"pairAddress":"0x883072ca41A6fF955589CA9241B84857634fA9bA","time":"2025-11-06T19:17:20.941Z","token0":"0x83988333b4C2Bf821013E3abdAF3702F01168cBb","token1":"0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2"}
+[00:01:30.781] Browser LOG     🆕 Token from new_token: {"pairAddress":"0x883072ca41A6fF955589CA9241B84857634fA9bA","token":"0x83988333b4c2bf821013e3abdaf3702f01168cbb"}
+[00:01:31.095] Browser LOG     🆕 Token from liquidity_ok: {"token":"0x83988333b4c2bf821013e3abdaf3702f01168cbb","wethReserve":"0.0"}

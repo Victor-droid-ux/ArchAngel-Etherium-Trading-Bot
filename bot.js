@@ -1,4 +1,5 @@
 // bot.js - ArchAngel bot
+const { shouldTradeToken } = require("./tradeFilter.js");
 require("dotenv").config();
 const fs = require("fs");
 const { ethers } = require("ethers");
@@ -12,6 +13,8 @@ const FACTORY_ADDRESS = process.env.FACTORY_ADDRESS;
 const WETH_ADDRESS = process.env.WETH_ADDRESS;
 const DRY_RUN = process.env.DRY_RUN === "true";
 const SLIPPAGE_BPS = Number(process.env.SLIPPAGE_BPS || 200);
+
+
 
 if (!FACTORY_ADDRESS || !WETH_ADDRESS) {
   console.error("Missing FACTORY_ADDRESS or WETH_ADDRESS in .env");
@@ -141,6 +144,19 @@ async function start(io, archAngelContract) {
           });
         }
 
+        // ✅ === Apply Trade Filters ===
+        const tokenData = { token: targetToken, pairAddress };
+        const shouldTrade = await shouldTradeToken(tokenData);
+
+        if (!shouldTrade) {
+          sendUIUpdate("token_skipped", {
+            token: targetToken,
+            reason: "did not meet trade criteria",
+          });
+          console.log("🚫 Skipped token (filter failed):", targetToken);
+          return;
+        }
+
         // === Buy logic ===
         if (DRY_RUN) {
           sendUIUpdate("dry_run", { token: targetToken });
@@ -166,6 +182,7 @@ async function start(io, archAngelContract) {
         sendUIUpdate("error", { message: err.message });
       }
     };
+
 
     _factory.on("PairCreated", _pairCreatedHandler);
     sendUIUpdate("bot_status", { status: "live" });
