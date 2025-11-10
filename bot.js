@@ -1,23 +1,28 @@
-// bot.js - ArchAngel bot
-const { shouldTradeToken } = require("./tradeFilter.js");
-require("dotenv").config();
-const fs = require("fs");
-const { ethers } = require("ethers");
+// bot.js - ArchAngel bot (corrected & safe)
+import { shouldTradeToken } from "./tradeFilter.js";
+import dotenv from "dotenv";
+dotenv.config();
 
+import fs from "fs";
+import { ethers } from "ethers";
+
+// --- ABIs ---
 const FACTORY_ABI = [
   "event PairCreated(address indexed token0, address indexed token1, address pair, uint)",
 ];
 
+// --- Environment Variables ---
 const SEEN_STORE = process.env.SEEN_STORE || "seen.json";
 const FACTORY_ADDRESS = process.env.FACTORY_ADDRESS;
 const WETH_ADDRESS = process.env.WETH_ADDRESS;
 const DRY_RUN = process.env.DRY_RUN === "true";
 const SLIPPAGE_BPS = Number(process.env.SLIPPAGE_BPS || 200);
 
-
-
+// --- Validate essential env vars ---
 if (!FACTORY_ADDRESS || !WETH_ADDRESS) {
-  console.error("Missing FACTORY_ADDRESS or WETH_ADDRESS in .env");
+  console.error(
+    "❌ Missing FACTORY_ADDRESS or WETH_ADDRESS in .env. Please add them before starting the bot."
+  );
   process.exit(1);
 }
 
@@ -27,7 +32,7 @@ try {
   if (fs.existsSync(SEEN_STORE)) {
     const arr = JSON.parse(fs.readFileSync(SEEN_STORE, "utf8"));
     arr.forEach((t) => seen.add(String(t).toLowerCase()));
-    console.log(`✅ Loaded ${seen.size} seen tokens`);
+    console.log(`✅ Loaded ${seen.size} seen tokens from ${SEEN_STORE}`);
   }
 } catch (e) {
   console.warn("⚠️ Could not load seen store:", e);
@@ -36,7 +41,7 @@ try {
 function persistSeen() {
   try {
     fs.writeFileSync(SEEN_STORE, JSON.stringify([...seen]), "utf8");
-    console.log(`💾 Persisted ${seen.size} seen tokens`);
+    console.log(`💾 Persisted ${seen.size} seen tokens to ${SEEN_STORE}`);
   } catch (e) {
     console.warn("⚠️ Failed to persist seen tokens:", e);
   }
@@ -49,10 +54,12 @@ let _archAngel = null;
 let _factory = null;
 let _pairCreatedHandler = null;
 
+// === Helpers ===
 function sendUIUpdate(event, data) {
   if (_io && typeof _io.emit === "function") _io.emit(event, data);
   console.log(`[UI] ${event}:`, data);
 }
+
 const lc = (addr) => (addr ? String(addr).toLowerCase() : addr);
 
 // === MAIN START FUNCTION ===
@@ -68,12 +75,19 @@ async function start(io, archAngelContract) {
     _io = io;
     _archAngel = archAngelContract;
 
-    // ✅ Ensure contract has a provider (Ethers v6 compatible)
-    const provider = _archAngel.provider || _archAngel.runner?.provider;
+    // --- Validate contract & provider ---
+    if (!_archAngel) throw new Error("ArchAngel contract instance is null");
 
-    if (!provider) {
+    const provider = _archAngel.provider || _archAngel.runner?.provider;
+    if (!provider)
       throw new Error("ArchAngel contract has no provider attached");
-    }
+
+    // --- Debug logs ---
+    console.log(
+      "🔹 ArchAngel contract address:",
+      _archAngel.target || _archAngel.address
+    );
+    console.log("🔹 Provider URL:", provider.connection?.url || "unknown");
 
     const network = await provider.getNetwork();
     const walletAddr = _archAngel.signer
@@ -82,15 +96,16 @@ async function start(io, archAngelContract) {
     console.log(`🌐 Connected to ${network.name} (chainId=${network.chainId})`);
     console.log(`👛 Wallet: ${walletAddr}`);
 
+    // --- Setup factory contract listener ---
     _factory = new ethers.Contract(FACTORY_ADDRESS, FACTORY_ABI, provider);
     console.log("🧩 Listening to factory:", FACTORY_ADDRESS);
 
-    // === Emit already seen tokens at startup ===
+    // Emit last 5 seen tokens at startup
     Array.from(seen)
       .slice(-5)
-      .forEach((token) => {
-        sendUIUpdate("new_token", { token, fromHistory: true });
-      });
+      .forEach((token) =>
+        sendUIUpdate("new_token", { token, fromHistory: true })
+      );
 
     _pairCreatedHandler = async (token0, token1, pairAddress) => {
       const time = new Date().toISOString();
@@ -112,7 +127,7 @@ async function start(io, archAngelContract) {
         persistSeen();
         sendUIUpdate("new_token", { token: targetToken, pairAddress });
 
-        // === Liquidity check ===
+        // --- Liquidity check ---
         try {
           const PAIR_ABI = [
             "function token0() view returns (address)",
@@ -144,10 +159,9 @@ async function start(io, archAngelContract) {
           });
         }
 
-        // ✅ === Apply Trade Filters ===
+        // --- Trade filter ---
         const tokenData = { token: targetToken, pairAddress };
         const shouldTrade = await shouldTradeToken(tokenData);
-
         if (!shouldTrade) {
           sendUIUpdate("token_skipped", {
             token: targetToken,
@@ -157,7 +171,7 @@ async function start(io, archAngelContract) {
           return;
         }
 
-        // === Buy logic ===
+        // --- Buy logic ---
         if (DRY_RUN) {
           sendUIUpdate("dry_run", { token: targetToken });
           console.log("[DRY RUN] would buy", targetToken);
@@ -183,12 +197,11 @@ async function start(io, archAngelContract) {
       }
     };
 
-
     _factory.on("PairCreated", _pairCreatedHandler);
     sendUIUpdate("bot_status", { status: "live" });
     console.log("✅ Bot started and listening for PairCreated events.");
   } catch (err) {
-    console.error("❌ Error in bot:", err.message);
+    console.error("❌ Error initializing bot:", err.message);
     running = false;
     _io?.emit("botStatus", { running: false });
   }
@@ -216,4 +229,4 @@ async function stop() {
   console.log("🛑 Bot stopped.");
 }
 
-module.exports = { start, stop };
+export default { start, stop };

@@ -1,7 +1,9 @@
 // tradeFilter.js
 import axios from "axios";
 import { ethers } from "ethers";
-import blacklist from "./blacklist.json" assert { type: "json" };
+import fs from "fs";
+
+const blacklist = JSON.parse(fs.readFileSync("./blacklist.json", "utf8"));
 
 const ETHERSCAN_API_KEY = process.env.ETHERSCAN_API_KEY;
 const GOPLUS_API_KEY = process.env.GOPLUS_API_KEY;

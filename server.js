@@ -1,28 +1,30 @@
-// server.js
-require("dotenv").config();
-const express = require("express");
-const http = require("http");
-const cors = require("cors");
-const { Server } = require("socket.io");
-const { ethers } = require("ethers");
-const fs = require("fs");
-const bot = require("./bot.js");
-const autoBuy = require("./autoBuy.js");
+// server.js (corrected)
+import dotenv from "dotenv";
+dotenv.config();
+
+import express from "express";
+import http from "http";
+import cors from "cors";
+import { Server } from "socket.io";
+import { ethers } from "ethers";
+import fs from "fs";
+import bot from "./bot.js";
 
 const app = express();
 app.use(cors());
 
-// === HTTP + WebSocket setup ===
+const PORT = process.env.PORT || 4001;
+
+// === HTTP + WebSocket server ===
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: { origin: "*", methods: ["GET", "POST"] },
 });
 
-const PORT = process.env.PORT || 4001;
 let botRunning = false;
 let provider, wallet, archangelContract;
 
-// === Load seen.json ===
+// --- Load seen tokens ---
 const SEEN_FILE = process.env.SEEN_STORE || "seen.json";
 let seen = [];
 try {
@@ -38,13 +40,17 @@ function saveSeen() {
   console.log("💾 seen.json updated");
 }
 
-// === Initialize provider, wallet, contracts ===
+// === Initialize provider, wallet, contract ===
 async function init() {
   try {
-    const rpcUrl = process.env.RPC_PROVIDER_URL;
-    if (!rpcUrl) throw new Error("Missing RPC_PROVIDER_URL in .env");
+    if (!process.env.WS_PROVIDER_URL)
+      throw new Error("Missing WS_PROVIDER_URL in .env");
+    if (!process.env.PRIVATE_KEY)
+      throw new Error("Missing PRIVATE_KEY in .env");
+    if (!process.env.ARCHANGEL_ADDRESS)
+      throw new Error("Missing ARCHANGEL_ADDRESS in .env");
 
-    provider = new ethers.JsonRpcProvider(rpcUrl);
+    provider = new ethers.WebSocketProvider(process.env.WS_PROVIDER_URL);
     wallet = new ethers.Wallet(process.env.PRIVATE_KEY, provider);
 
     const archangelAbi = JSON.parse(
@@ -53,7 +59,7 @@ async function init() {
     archangelContract = new ethers.Contract(
       process.env.ARCHANGEL_ADDRESS,
       archangelAbi,
-      wallet // ✅ signer with provider
+      wallet
     );
 
     const network = await provider.getNetwork();
@@ -66,12 +72,13 @@ async function init() {
     console.error("❌ Error initializing bot:", err.message);
   }
 }
-init();
 
-// === Emit contract balance ===
+await init();
+
+// === Emit ArchAngel contract balance ===
 async function emitContractBalance(retries = 3) {
   try {
-    if (!provider) return;
+    if (!provider || !archangelContract) return;
     const balance = await provider.getBalance(process.env.ARCHANGEL_ADDRESS);
     const eth = ethers.formatEther(balance);
     io.emit("contractBalance", { balance: eth });
@@ -87,14 +94,13 @@ async function emitContractBalance(retries = 3) {
 }
 setInterval(emitContractBalance, 60000);
 
-// === WebSocket handlers ===
+// === Socket.IO handlers ===
 io.on("connection", (socket) => {
   console.log("🟢 UI connected:", socket.id);
 
   emitContractBalance();
   io.emit("botStatus", { running: botRunning });
 
-  // 🧠 Send previously seen tokens on request
   socket.on("requestSeenTokens", () => {
     const tokens = seen.map((token) => ({
       symbol: "Unknown",
@@ -104,7 +110,6 @@ io.on("connection", (socket) => {
     socket.emit("initial_tokens", tokens);
   });
 
-  // 🚀 Start bot
   socket.on("startBot", async () => {
     if (botRunning) {
       console.log("⚠️ Bot already running.");
@@ -112,42 +117,24 @@ io.on("connection", (socket) => {
     }
 
     try {
+      if (!archangelContract) {
+        console.log("🔄 Reinitializing provider and contract...");
+        await init();
+      }
+
       console.log("🚀 Starting bot...");
       botRunning = true;
       io.emit("botStatus", { running: true });
 
-      if (!provider) {
-        console.log("🔄 Reinitializing provider...");
-        provider = new ethers.JsonRpcProvider(process.env.RPC_PROVIDER_URL);
-      }
-
-      const signer = new ethers.Wallet(process.env.PRIVATE_KEY, provider);
-      const archangelAbi = JSON.parse(
-        fs.readFileSync("./ArchAngelABI.json", "utf8")
-      );
-
-      const connectedContract = new ethers.Contract(
-        process.env.ARCHANGEL_ADDRESS,
-        archangelAbi,
-        signer
-      );
-
-      if (!connectedContract.runner || !connectedContract.runner.provider) {
-        throw new Error("Contract still missing provider — cannot start bot");
-      }
-
-      console.log("✅ Contract and provider connected properly");
-      await bot.start(io, connectedContract);
-
+      await bot.start(io, archangelContract);
       io.emit("botStatus", { running: true });
     } catch (error) {
-      console.error("❌ Error in bot:", error.message);
+      console.error("❌ Error starting bot:", error.message);
       io.emit("error", { message: error.message });
       botRunning = false;
     }
   });
 
-  // 🛑 Stop bot
   socket.on("stopBot", async () => {
     if (!botRunning) {
       console.log("⚠️ Bot not running.");
@@ -156,8 +143,8 @@ io.on("connection", (socket) => {
     try {
       console.log("🛑 Stopping bot...");
       await bot.stop();
-    } catch (error) {
-      console.error("❌ Error stopping bot:", error.message);
+    } catch (err) {
+      console.error("❌ Error stopping bot:", err.message);
     } finally {
       botRunning = false;
       io.emit("botStatus", { running: false });
@@ -165,7 +152,10 @@ io.on("connection", (socket) => {
   });
 
   socket.on("getBalance", emitContractBalance);
-  socket.on("disconnect", () => console.log("🔴 UI disconnected:", socket.id));
+
+  socket.on("disconnect", () => {
+    console.log("🔴 UI disconnected:", socket.id);
+  });
 });
 
 // === Health endpoint ===
@@ -184,7 +174,7 @@ process.on("SIGINT", async () => {
   try {
     await bot.stop();
   } catch (err) {
-    console.error("Error during shutdown:", err.message);
+    console.error("❌ Error during shutdown:", err.message);
   }
   process.exit(0);
 });

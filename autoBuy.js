@@ -1,5 +1,5 @@
 // autoBuy.js
-const { ethers } = require("ethers");
+import { ethers } from "ethers";
 
 async function autoBuy(pairAddress, wallet, provider) {
   try {
@@ -20,4 +20,4 @@ async function autoBuy(pairAddress, wallet, provider) {
   }
 }
 
-module.exports = autoBuy;
+export default autoBuy;
