@@ -1,7 +1,5 @@
-import "@nomicfoundation/hardhat-toolbox";
-import dotenv from "dotenv";
-
-dotenv.config();
+require("dotenv").config();
+require("@nomicfoundation/hardhat-toolbox");
 
 const { ETHERSCAN_API_KEY, PRIVATE_KEY, ALCHEMY_API_URL } = process.env;
 

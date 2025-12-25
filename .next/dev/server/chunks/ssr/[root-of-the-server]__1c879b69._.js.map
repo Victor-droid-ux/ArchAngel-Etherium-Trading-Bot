@@ -1,6 +1,0 @@
-{
-  "version": 3,
-  "sources": [],
-  "sections": [
-    {"offset": {"line": 10, "column": 0}, "map": {"version":3,"sources":["file:///C:/Users/VP/ArchAngelbot/pages/_app.js"],"sourcesContent":["// pages/_app.js\r\nimport '../styles/globals.css'; // optional, only if you have a styles folder\r\n\r\nexport default function MyApp({ Component, pageProps }) {\r\n  return <Component {...pageProps} />;\r\n}\r\n"],"names":[],"mappings":"AAAA,gBAAgB;;;;;;;;AAGD,SAAS,MAAM,EAAE,SAAS,EAAE,SAAS,EAAE;IACpD,qBAAO,qKAAC;QAAW,GAAG,SAAS;;;;;;AACjC","debugId":null}}]
-}

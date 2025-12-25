@@ -1,4 +1,43 @@
 /node_modules
 
+# Build output
+artifacts/
+build/
+.cache/
+.next/
+coverage/
+
+# Local env files
 .env
-.env.*.local
+.env.*
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Hardhat files
+cache/
+
+# VSCode
+.vscode/
+
+# Test output
+*.tsbuildinfo
+
+# Misc
+*.log
+
+# Ignore private keys and sensitive files
+private.key
+*.pem
+*.p12
+*.crt
+*.cert
+*.jks
+*.keystore
+*.pfx
